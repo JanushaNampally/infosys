@@ -3,4 +3,7 @@ __pycache__/
 output/
 data/
 dataset.csv
+*.mp4
+*.pt
+*.pkl
 *.pyc
