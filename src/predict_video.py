@@ -9,9 +9,8 @@ model, label_encoder = joblib.load("../models/activity_model.pkl")
 
 mp_pose = mp.solutions.pose
 pose = mp_pose.Pose()
-
-VIDEO_PATH = "C:/Users/nampally janusha/OneDrive - K L University/Desktop/infosys/data/Jogging/Jogging 6.mp4"
-
+VIDEO_PATH = "C:/Users/nampally janusha/OneDrive - K L University/Desktop/infosys/data/Jogging/Walk 6.mp4"
+#IDEO_PATH = r"C:\Users\nampally janusha\OneDrive - K L University\Desktop\infosys\data\testing_data_1.mp4"
 OUTPUT_PATH = "../output/output_video.mp4"
 
 os.makedirs("../output", exist_ok=True)
