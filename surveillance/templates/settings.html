@@ -2,32 +2,30 @@
 
 {% block content %}
 
-<h2>System Settings</h2>
-
-<div class="card p-4 mt-3">
-
-<form>
-
-<h6>Allowed Activities</h6>
-
-<div class="form-check">
-
-<input class="form-check-input" type="checkbox" checked>
-<label class="form-check-label">Walking</label>
-
+<div class="dashboard-header">
+	<div>
+		<p class="section-label">Configuration</p>
+		<h2 class="dashboard-title">System Settings</h2>
+		<p class="dashboard-subtitle">Control activity policies and behavior for monitoring workflows.</p>
+	</div>
 </div>
 
-<div class="form-check">
+<div class="dashboard-panel">
+	<form>
+		<h6 class="mb-3">Allowed Activities</h6>
 
-<input class="form-check-input" type="checkbox" checked>
-<label class="form-check-label">Running</label>
+		<div class="form-check mb-2">
+			<input class="form-check-input" type="checkbox" checked id="activityWalking">
+			<label class="form-check-label" for="activityWalking">Walking</label>
+		</div>
 
-</div>
+		<div class="form-check mb-2">
+			<input class="form-check-input" type="checkbox" checked id="activityRunning">
+			<label class="form-check-label" for="activityRunning">Running</label>
+		</div>
 
-<button class="btn btn-primary mt-3">Update Settings</button>
-
-</form>
-
+		<button class="btn btn-primary mt-3" type="button">Update Settings</button>
+	</form>
 </div>
 
 {% endblock %}

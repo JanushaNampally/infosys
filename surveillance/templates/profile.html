@@ -2,16 +2,29 @@
 
 {% block content %}
 
-<h2>Administrator Profile</h2>
+<div class="dashboard-header">
+	<div>
+		<p class="section-label">User Profile</p>
+		<h2 class="dashboard-title">Administrator Profile</h2>
+		<p class="dashboard-subtitle">View and manage account information used for surveillance operations.</p>
+	</div>
+</div>
 
-<div class="card p-4 mt-3">
-
-<p><strong>Name:</strong> Park Administrator</p>
-
-<p><strong>Email:</strong> admin@parksecurity.com</p>
-
-<button class="btn btn-primary">Edit Profile</button>
-
+<div class="dashboard-panel">
+	<div class="status-list mb-0">
+		<div class="status-row">
+			<span>Name</span>
+			<strong>{{ request.user.username|default:"Park Administrator" }}</strong>
+		</div>
+		<div class="status-row">
+			<span>Email</span>
+			<strong>{{ request.user.email|default:"admin@parksecurity.com" }}</strong>
+		</div>
+		<div class="status-row">
+			<span>Role</span>
+			<span class="status-badge status-neutral">System Administrator</span>
+		</div>
+	</div>
 </div>
 
 {% endblock %}

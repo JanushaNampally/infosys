@@ -2,47 +2,50 @@
 
 {% block content %}
 
-<h2>Activity Detection Logs</h2>
+<div class="dashboard-header">
+	<div>
+		<p class="section-label">Activity History</p>
+		<h2 class="dashboard-title">Detection Log Timeline</h2>
+		<p class="dashboard-subtitle">Review all processed activities and flagged incidents for your account.</p>
+	</div>
+</div>
 
-<table class="table table-striped mt-4">
-
-<thead>
-
-<tr>
-<th>Timestamp</th>
-<th>Activity</th>
-<th>Status</th>
-</tr>
-
-</thead>
-
-<tbody>
-
-{% for log in logs %}
-
-<tr>
-
-<td>{{ log.timestamp }}</td>
-
-<td>{{ log.activity_type }}/td
-
-
-<td>
-
-{% if log.status == "Processed" %}
-<span class="badge bg-success">Processed</span>
-{% else %}
-<span class="badge bg-danger">Flagged</span>
-{% endif %}
-
-</td>
-
-</tr>
-
-{% endfor %}
-
-</tbody>
-
-</table>
+<div class="dashboard-panel">
+	{% if logs %}
+		<div class="table-responsive">
+			<table class="custom-table">
+				<thead>
+					<tr>
+						<th>Timestamp</th>
+						<th>Activity</th>
+						<th>Status</th>
+						<th>Confidence</th>
+						<th>Video</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for log in logs %}
+					<tr>
+						<td>{{ log.timestamp|date:"M d, Y H:i" }}</td>
+						<td>{{ log.activity_type }}</td>
+						<td>
+							<span class="status-badge {% if log.status == 'Safe' %}status-safe{% elif log.status == 'Unsafe' %}status-danger{% else %}status-neutral{% endif %}">
+								{{ log.status }}
+							</span>
+						</td>
+						<td>{{ log.confidence|floatformat:2 }}%</td>
+						<td>{{ log.video_name }}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	{% else %}
+		<div class="empty-state">
+			<h5>No history available</h5>
+			<p>Processed video results will appear here after you run monitoring.</p>
+		</div>
+	{% endif %}
+</div>
 
 {% endblock %}
