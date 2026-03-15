@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="dashboard-header">
+    <div>
+        <p class="section-label">AI Surveillance Dashboard</p>
+        <h2 class="dashboard-title">Park Security Monitoring Overview</h2>
+        <p class="dashboard-subtitle">
+            Monitor processed videos, unsafe activity alerts, and AI system readiness from one place.
+        </p>
+    </div>
+
+    <div>
+        <span class="status-badge {% if system_health == 'Healthy' %}status-safe{% else %}status-danger{% endif %}">
+            System {{ system_health }}
+        </span>
+    </div>
+</div>
+
+<div class="stats-grid">
+    <div class="dashboard-card">
+        <p class="card-label">Total Videos Processed</p>
+        <h3>{{ total_videos }}</h3>
+        <span class="card-meta">Uploaded and analyzed by AI pipeline</span>
+    </div>
+
+    <div class="dashboard-card">
+        <p class="card-label">Safe Activities</p>
+        <h3 class="text-safe">{{ safe_count }}</h3>
+        <span class="card-meta">Walking, jogging, yoga, sitting</span>
+    </div>
+
+    <div class="dashboard-card">
+        <p class="card-label">Unsafe Activities</p>
+        <h3 class="text-danger-custom">{{ unsafe_count }}</h3>
+        <span class="card-meta">Potential security incidents detected</span>
+    </div>
+
+    <div class="dashboard-card">
+        <p class="card-label">Incident Alerts</p>
+        <h3>{{ incidents }}</h3>
+        <span class="card-meta">Logs currently marked as unsafe</span>
+    </div>
+</div>
+
+<div class="dashboard-layout">
+    <div class="dashboard-panel">
+        <div class="panel-header">
+            <h4>System Status</h4>
+            <p>Operational health of core surveillance services</p>
+        </div>
+
+        <div class="status-list">
+            <div class="status-row">
+                <span>AI Model</span>
+                <span class="status-badge {% if ai_model_status == 'Online' %}status-safe{% else %}status-danger{% endif %}">
+                    {{ ai_model_status }}
+                </span>
+            </div>
+
+            <div class="status-row">
+                <span>Camera Feed</span>
+                <span class="status-badge {% if camera_status == 'Online' %}status-safe{% else %}status-danger{% endif %}">
+                    {{ camera_status }}
+                </span>
+            </div>
+
+            <div class="status-row">
+                <span>Server</span>
+                <span class="status-badge {% if server_status == 'Online' %}status-safe{% else %}status-danger{% endif %}">
+                    {{ server_status }}
+                </span>
+            </div>
+
+            <div class="status-row">
+                <span>Detection Sensitivity</span>
+                <span class="status-badge status-neutral">{{ detection_sensitivity }}</span>
+            </div>
+        </div>
+
+        <div class="activity-tags">
+            {% for activity in allowed_activities %}
+                <span class="activity-pill">{{ activity }}</span>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="dashboard-panel">
+        <div class="panel-header">
+            <h4>Recent Unsafe Alerts</h4>
+            <p>Latest incident-driven activity logs</p>
+        </div>
+
+        {% if recent_alerts %}
+            <div class="table-responsive">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Activity</th>
+                            <th>Status</th>
+                            <th>Confidence</th>
+                            <th>Video</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in recent_alerts %}
+                        <tr>
+                            <td>{{ log.timestamp|date:"M d, Y H:i" }}</td>
+                            <td>{{ log.activity_type }}</td>
+                            <td>
+                                <span class="status-badge {% if log.status == 'Safe' %}status-safe{% else %}status-danger{% endif %}">
+                                    {{ log.status }}
+                                </span>
+                            </td>
+                            <td>{{ log.confidence|floatformat:2 }}%</td>
+                            <td>{{ log.video_name }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <h5>No active unsafe alerts</h5>
+                <p>Your dashboard will show recent unsafe detections here after AI processing.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

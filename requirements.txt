@@ -1,0 +1,10 @@
+Django==4.2.7
+opencv-python
+mediapipe
+numpy
+pandas
+scikit-learn
+joblib
+ultralytics
+tqdm
+pillow

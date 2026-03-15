@@ -21,3 +21,10 @@ This project follows feature branching:
 1. Clone the repository
 2. Install dependencies
 3. Run the application
+
+Run:
+python manage.py makemigrations
+python manage.py migrate
+## Start the server:
+python manage.py runserver
+Open the dashboard:

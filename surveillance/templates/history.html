@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Activity Detection Logs</h2>
+
+<table class="table table-striped mt-4">
+
+<thead>
+
+<tr>
+<th>Timestamp</th>
+<th>Activity</th>
+<th>Status</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for log in logs %}
+
+<tr>
+
+<td>{{ log.timestamp }}</td>
+
+<td>{{ log.activity_type }}/td
+
+
+<td>
+
+{% if log.status == "Processed" %}
+<span class="badge bg-success">Processed</span>
+{% else %}
+<span class="badge bg-danger">Flagged</span>
+{% endif %}
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+{% endblock %}
