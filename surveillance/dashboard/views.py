@@ -201,7 +201,13 @@ def monitor(request):
         output_file = "result_" + video.name
         output_path = os.path.join(output_dir, output_file)
 
-        ai_result = process_video(upload_path, output_path, speed_mode=selected_speed_mode)
+        try:
+            ai_result = process_video(upload_path, output_path, speed_mode=selected_speed_mode)
+        except Exception as exc:
+            return render(request, "monitor.html", {
+                "error": f"Video processing failed: {exc}",
+                "selected_speed_mode": selected_speed_mode,
+            })
 
         ActivityLog.objects.create(
             user=request.user,
@@ -231,6 +237,7 @@ def monitor(request):
             "confidence": ai_result["confidence_score"],
             "classified_frames": ai_result["classified_frames"],
             "no_pose_frames": ai_result["no_pose_frames"]
+            ,"warning": ai_result.get("warning")
             ,"selected_speed_mode": selected_speed_mode,
             "selected_speed_mode_label": SPEED_MODE_CHOICES[selected_speed_mode],
         }

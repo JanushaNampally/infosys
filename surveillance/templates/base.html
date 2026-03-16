@@ -12,23 +12,42 @@
 <div class="wrapper">
 	<nav class="sidebar">
 		<h3 class="logo">AI Surveillance</h3>
+		<p class="app-subtitle">Infosys Enterprise Demo</p>
+		<p class="nav-section-title">Navigation</p>
+
 		<ul>
-			<li><a href="/" class="{% if request.path == '/' %}active{% endif %}">Dashboard</a></li>
-			<li><a href="/monitor/" class="{% if '/monitor/' in request.path %}active{% endif %}">Monitor</a></li>
-			<li><a href="/history/" class="{% if '/history/' in request.path %}active{% endif %}">History</a></li>
-			<li><a href="/settings/" class="{% if '/settings/' in request.path %}active{% endif %}">Settings</a></li>
-			<li><a href="/profile/" class="{% if '/profile/' in request.path %}active{% endif %}">Profile</a></li>
-			<li><a href="/logout/">Logout</a></li>
+			<li><a href="/" class="{% if request.path == '/' %}active{% endif %}"><span class="nav-label">Dashboard</span></a></li>
+			<li><a href="/monitor/" class="{% if '/monitor/' in request.path %}active{% endif %}"><span class="nav-label">Monitor</span></a></li>
+			<li><a href="/history/" class="{% if '/history/' in request.path %}active{% endif %}"><span class="nav-label">History</span></a></li>
+			<li><a href="/settings/" class="{% if '/settings/' in request.path %}active{% endif %}"><span class="nav-label">Settings</span></a></li>
+			<li><a href="/profile/" class="{% if '/profile/' in request.path %}active{% endif %}"><span class="nav-label">Profile</span></a></li>
+			<li><a href="/logout/" class="nav-logout"><span class="nav-label">Logout</span></a></li>
 		</ul>
+
+		<div class="sidebar-footer">
+			<span>Professional Presentation Build</span>
+		</div>
 	</nav>
 
 	<main class="main">
 		<header class="topbar">
-			<h4>AI Based Intelligent Surveillance System</h4>
+			<div class="topbar-left">
+				<h4>AI Based Intelligent Surveillance System</h4>
+				<p class="topbar-subtitle">Real-time video intelligence for smart safety operations</p>
+			</div>
+			<div class="topbar-right">
+				<span class="topbar-chip">{% now "M d, Y" %}</span>
+				<span class="topbar-chip user-chip">
+					<span class="user-avatar">{{ request.user.username|default:"A"|first|upper }}</span>
+					{{ request.user.username|default:"Administrator" }}
+				</span>
+			</div>
 		</header>
 		<section class="content">
-			{% block content %}
-			{% endblock %}
+			<div class="content-shell">
+				{% block content %}
+				{% endblock %}
+			</div>
 		</section>
 	</main>
 </div>

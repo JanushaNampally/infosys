@@ -13,6 +13,7 @@ import pandas as pd
 import subprocess
 import numpy as np
 from collections import Counter
+from contextlib import nullcontext
 
 from ultralytics import YOLO
 from django.conf import settings
@@ -24,20 +25,41 @@ warnings.filterwarnings(
 )
 
 MODEL_PATH = os.path.join(settings.BASE_DIR.parent, "models", "activity_model.pkl")
+_RUNTIME = None
 
-model, label_encoder = joblib.load(MODEL_PATH)
 
+def _ensure_runtime():
+    global _RUNTIME
+    if _RUNTIME is not None:
+        return _RUNTIME
 
-yolo_model = YOLO("yolov8n.pt")
+    if not os.path.exists(MODEL_PATH):
+        raise RuntimeError(f"Activity model file not found: {MODEL_PATH}")
 
-mp_pose = mp.solutions.pose
-FEATURE_COLUMNS = list(
-    getattr(
-        model,
-        "feature_names_in_",
-        [axis + str(i) for i in range(33) for axis in ("x", "y", "z", "v")],
+    loaded = joblib.load(MODEL_PATH)
+    model, label_encoder = loaded
+
+    feature_columns = list(
+        getattr(
+            model,
+            "feature_names_in_",
+            [axis + str(i) for i in range(33) for axis in ("x", "y", "z", "v")],
+        )
     )
-)
+
+    pose_api = None
+    if hasattr(mp, "solutions") and hasattr(mp.solutions, "pose"):
+        pose_api = mp.solutions.pose
+
+    yolo_model = YOLO("yolov8n.pt")
+    _RUNTIME = {
+        "model": model,
+        "label_encoder": label_encoder,
+        "feature_columns": feature_columns,
+        "mp_pose": pose_api,
+        "yolo_model": yolo_model,
+    }
+    return _RUNTIME
 
 SAFE_CLASSES = {"Walking", "Running", "Jogging", "Yoga_Meditation", "Sitting"}
 
@@ -93,6 +115,12 @@ def _clamp_box(x1, y1, x2, y2, width, height):
     return x1, y1, x2, y2
 
 def process_video(input_path, output_path, speed_mode="balanced"):
+    runtime = _ensure_runtime()
+    model = runtime["model"]
+    label_encoder = runtime["label_encoder"]
+    feature_columns = runtime["feature_columns"]
+    mp_pose = runtime["mp_pose"]
+    yolo_model = runtime["yolo_model"]
 
     speed_mode, config = _runtime_config(speed_mode)
 
@@ -112,10 +140,23 @@ def process_video(input_path, output_path, speed_mode="balanced"):
     safe_frame_count = 0
     unsafe_frame_count = 0
     no_pose_count = 0
+    warning = None
     frame_index = -1
     last_detections = []
 
-    with mp_pose.Pose(model_complexity=0, static_image_mode=False) as pose:
+    if mp_pose is None:
+        warning = (
+            "MediaPipe Pose API is unavailable in the installed mediapipe package. "
+            "Showing person detections only; activity labels are disabled."
+        )
+
+    pose_context = (
+        mp_pose.Pose(model_complexity=0, static_image_mode=False)
+        if mp_pose is not None
+        else nullcontext(None)
+    )
+
+    with pose_context as pose:
         while True:
 
             ret, frame = cap.read()
@@ -154,16 +195,19 @@ def process_video(input_path, output_path, speed_mode="balanced"):
                     if crop.size == 0:
                         continue
 
-                    rgb = cv2.cvtColor(crop, cv2.COLOR_BGR2RGB)
-                    result = pose.process(rgb)
+                    if pose is not None:
+                        rgb = cv2.cvtColor(crop, cv2.COLOR_BGR2RGB)
+                        result = pose.process(rgb)
+                    else:
+                        result = None
 
-                    if result.pose_landmarks:
+                    if result is not None and result.pose_landmarks:
                         landmarks = []
 
                         for lm in result.pose_landmarks.landmark:
                             landmarks.extend([lm.x, lm.y, lm.z, lm.visibility])
 
-                        X = pd.DataFrame([landmarks], columns=FEATURE_COLUMNS)
+                        X = pd.DataFrame([landmarks], columns=feature_columns)
                         pred = model.predict(X)
 
                         activity = label_encoder.inverse_transform(pred)[0]
@@ -179,7 +223,7 @@ def process_video(input_path, output_path, speed_mode="balanced"):
                             unsafe_frame_count += 1
                     else:
                         color = (0, 165, 255)
-                        label = "POSE NOT CLEAR"
+                        label = "PERSON DETECTED"
                         no_pose_count += 1
 
                     detections_for_frame.append((x1, y1, x2, y2, color, label))
@@ -256,5 +300,6 @@ def process_video(input_path, output_path, speed_mode="balanced"):
         "confidence_score": confidence_score,
         "classified_frames": total_classified_frames,
         "no_pose_frames": no_pose_count,
-        "has_unsafe_activity": bool(unsafe_activities)
+        "has_unsafe_activity": bool(unsafe_activities),
+        "warning": warning,
     }

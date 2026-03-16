@@ -12,16 +12,47 @@
 
 <div class="dashboard-panel">
 	<form>
-		<h6 class="mb-3">Allowed Activities</h6>
+		<div class="settings-grid">
+			<div>
+				<h6 class="panel-title">Allowed Activities</h6>
+				<div class="form-check mb-2">
+					<input class="form-check-input" type="checkbox" checked id="activityWalking">
+					<label class="form-check-label" for="activityWalking">Walking</label>
+				</div>
+				<div class="form-check mb-2">
+					<input class="form-check-input" type="checkbox" checked id="activityRunning">
+					<label class="form-check-label" for="activityRunning">Running</label>
+				</div>
+				<div class="form-check mb-2">
+					<input class="form-check-input" type="checkbox" checked id="activityJogging">
+					<label class="form-check-label" for="activityJogging">Jogging</label>
+				</div>
+				<div class="form-check mb-2">
+					<input class="form-check-input" type="checkbox" checked id="activitySitting">
+					<label class="form-check-label" for="activitySitting">Sitting</label>
+				</div>
+				<div class="form-check mb-2">
+					<input class="form-check-input" type="checkbox" checked id="activityYoga">
+					<label class="form-check-label" for="activityYoga">Yoga / Meditation</label>
+				</div>
+			</div>
 
-		<div class="form-check mb-2">
-			<input class="form-check-input" type="checkbox" checked id="activityWalking">
-			<label class="form-check-label" for="activityWalking">Walking</label>
-		</div>
-
-		<div class="form-check mb-2">
-			<input class="form-check-input" type="checkbox" checked id="activityRunning">
-			<label class="form-check-label" for="activityRunning">Running</label>
+			<div>
+				<h6 class="panel-title">Detection Preferences</h6>
+				<label class="form-label fw-semibold">Default Processing Mode</label>
+				<select class="form-select mb-3">
+					<option selected>Balanced</option>
+					<option>Fast</option>
+					<option>Accurate</option>
+				</select>
+				<label class="form-label fw-semibold">Incident Threshold</label>
+				<select class="form-select mb-3">
+					<option>High Sensitivity</option>
+					<option selected>Medium Sensitivity</option>
+					<option>Low Sensitivity</option>
+				</select>
+				<p class="text-muted mb-0">This demo layout is presentation-ready and can be wired to backend settings anytime.</p>
+			</div>
 		</div>
 
 		<button class="btn btn-primary mt-3" type="button">Update Settings</button>

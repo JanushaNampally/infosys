@@ -1,9 +1,9 @@
 Django==4.2.7
 opencv-python
-mediapipe
+mediapipe==0.10.14
 numpy
 pandas
-scikit-learn
+scikit-learn==1.7.2
 joblib
 ultralytics
 tqdm

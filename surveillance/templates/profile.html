@@ -11,18 +11,21 @@
 </div>
 
 <div class="dashboard-panel">
-	<div class="status-list mb-0">
-		<div class="status-row">
-			<span>Name</span>
-			<strong>{{ request.user.username|default:"Park Administrator" }}</strong>
+	<div class="profile-grid">
+		<div class="profile-card">
+			<p class="card-label">Name</p>
+			<h5>{{ request.user.username|default:"System Administrator" }}</h5>
+			<span class="card-meta">Primary user identity</span>
 		</div>
-		<div class="status-row">
-			<span>Email</span>
-			<strong>{{ request.user.email|default:"admin@parksecurity.com" }}</strong>
+		<div class="profile-card">
+			<p class="card-label">Email</p>
+			<h5>{{ request.user.email|default:"admin@infosys-demo.com" }}</h5>
+			<span class="card-meta">Registered account email</span>
 		</div>
-		<div class="status-row">
-			<span>Role</span>
-			<span class="status-badge status-neutral">System Administrator</span>
+		<div class="profile-card">
+			<p class="card-label">Role</p>
+			<h5><span class="status-badge status-neutral">System Administrator</span></h5>
+			<span class="card-meta">Access level and privileges</span>
 		</div>
 	</div>
 </div>
